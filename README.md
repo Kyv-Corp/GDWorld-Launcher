@@ -11,6 +11,7 @@
 - `vendor/launcher` — исходники ядра GravitLauncher и LaunchServer.
 - `vendor/java-runtime` — исходники оригинального JavaFX-интерфейса.
 - `vendor/launcher-modules` — точная версия официальных модулей, указанная upstream.
+- `vendor/prestarter` — исходники нативного загрузчика Windows (Prestarter 2.1.0).
 - `UPSTREAM.json` — версии, ссылки и закреплённые коммиты компонентов.
 - `scripts` — сборка интерфейса; `tests` — проверки правил мини-игр и JavaFX с фиктивными данными.
 
@@ -27,6 +28,8 @@
 Нужны JDK 21+ (для современных версий Gradle рекомендуется JDK 25), Python 3 и доступ к Maven/Gradle. Запустите `bash scripts/build-runtime.sh`: сценарий копирует чистый upstream в `build`, добавляет наши исходники и два обработчика экрана загрузки, собирает `JavaRuntime.jar` через Gradle. Папка `vendor` не изменяется. Готовый интерфейс — `build/java-runtime/build/libs/JavaRuntime.jar`, тема — `build/runtime`.
 
 Для полной сборки ядра используйте исходники `vendor/launcher`, предварительно скопировав `vendor/launcher-modules` в `vendor/launcher/modules`, и штатный `./gradlew installDist`. Настройка собственного LaunchServer: [официальная инструкция](https://gravitlauncher.com/quickstart). Подключите собранный JavaRuntime и тему, добавьте правило ProGuard `-keep class pro.gravit.launcher.gui.components.LoadingGames { *; }`, настройте собственную авторизацию, сертификат и адрес проекта, затем выполните `build` в LaunchServer. Пример публичных настроек интерфейса — `config/JavaRuntime.json`.
+
+Windows EXE состоит из официального Prestarter 2.1.0 и подписанного JAR. SHA-256 исходного Prestarter.exe закреплён в `UPSTREAM.json` и совпадает с официальным релизом; его Rust-исходники находятся в `vendor/prestarter`.
 
 Рабочие бинарники GDWorld подписываются ключом проекта и обфусцируются штатным сборщиком Gravit. Самостоятельная сборка использует ваши ключи и настройки, поэтому побайтовое совпадение с релизом не обещается. `PatchRuntime.java` также показывает точную логику установки наших изменений поверх официального JavaRuntime.jar; основной способ сборки в этом репозитории использует исходники.
 

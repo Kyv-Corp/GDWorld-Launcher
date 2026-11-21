@@ -1,9 +1,9 @@
 {
-  "build_id": "4ce8038f416b561e9eab0772eef8b72ca48be06f99f52d3ff35ab8b4ad2c7488",
-  "tag": "gdworld-4ce8038f416b561e",
-  "created_at": "2026-11-21T07:49:59Z",
+  "build_id": "685cc70cd8d846347c034bddaf58d906d3fff5b28f1036685d108b2957f35a75",
+  "tag": "gdworld-685cc70cd8d84634",
+  "created_at": "2026-11-21T07:57:39Z",
   "binaries": {
-    "Launcher.jar": "45e61be1467d984dc9fa46feeb197d28660372db055ba83ca8292347f9e02188",
-    "Launcher.exe": "a87f16ba4f31d2c821636ab4df28d17bd4ccc1a99e231dff87794914e282bb44"
+    "Launcher.jar": "276ebae5da1415ae293d0cbb3ed45c4b9838699d14061b528c58f39b086c8d8f",
+    "Launcher.exe": "9456c8796e1041c0c3964539ff15879f6335ffb67875004c7247a140fa7be924"
   }
 }

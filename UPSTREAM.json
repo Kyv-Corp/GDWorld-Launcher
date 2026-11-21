@@ -13,5 +13,11 @@
   "launcher-modules": {
     "repository": "https://github.com/GravitLauncher/LauncherModules",
     "commit": "403355fe0509ce03b1915aac766d85b243ba5cdc"
+  },
+  "prestarter": {
+    "repository": "https://github.com/GravitLauncher/LauncherPrestarter",
+    "tag": "v2.1.0",
+    "commit": "94bcc6949c1e4b7aec37bd1d00515203e2772bcb",
+    "official_exe_sha256": "e206a35615b91ae21a13154b7cb4dda9c742a2a45211880e79100bb09636de7f"
   }
 }
