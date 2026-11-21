@@ -1,0 +1,107 @@
+name: Publish launcher
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+  push:
+    paths: ['.github/workflows/publish.yml']
+permissions:
+  contents: write
+concurrency:
+  group: launcher-releases
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check for a new build
+        id: build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail --silent --show-error --retry 3 https://gd-network.ddns.net/launcher-builds/manifest.json -o /tmp/gdworld-build.json
+          python3 - <<'PY'
+          import json,re,os
+          j=json.load(open('/tmp/gdworld-build.json'))
+          assert j['schema']==1 and re.fullmatch(r'gdworld-[a-f0-9]{16}',j['tag'])
+          assert j['base_url']=='https://gd-network.ddns.net/launcher-builds/'+j['tag']+'/'
+          assert set(j['assets'])=={'Launcher.jar','Launcher.exe','source.tar.gz','SHA256SUMS'}
+          for name,asset in j['assets'].items():
+              assert re.fullmatch(r'[a-f0-9]{64}',asset['sha256']) and 0<asset['size']<100_000_000
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('tag='+j['tag']+'\n')
+          PY
+          tag=$(python3 -c "import json; print(json.load(open('/tmp/gdworld-build.json'))['tag'])")
+          if gh release view "$tag" --json isDraft --jq 'select(.isDraft == false)' | grep -q .; then
+            echo 'new=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'new=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Fetch and verify immutable artifacts
+        if: steps.build.outputs.new == 'true'
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,urllib.request,pathlib
+          j=json.load(open('/tmp/gdworld-build.json'))
+          out=pathlib.Path('/tmp/gdworld-release');out.mkdir()
+          for name,asset in j['assets'].items():
+              with urllib.request.urlopen(j['base_url']+name,timeout=60) as response:
+                  data=response.read(asset['size']+1)
+              assert len(data)==asset['size'] and hashlib.sha256(data).hexdigest()==asset['sha256'],name
+              (out/name).write_bytes(data)
+          PY
+      - name: Import the matching public sources
+        if: steps.build.outputs.new == 'true'
+        run: |
+          python3 - <<'PY'
+          import tarfile,pathlib,json
+          allowed={'README.md','LICENSE','UPSTREAM.json','.gitignore','vendor','runtime','gdworld','scripts','tests','config','release.json'}
+          with tarfile.open('/tmp/gdworld-release/source.tar.gz') as archive:
+              members=archive.getmembers()
+              assert sum(m.size for m in members)<100_000_000
+              for member in members:
+                  p=pathlib.PurePosixPath(member.name)
+                  assert not p.is_absolute() and '..' not in p.parts and p.parts[0] in allowed
+                  assert not member.issym() and not member.islnk()
+              # Exact source replacement handles deleted files between builds as well.
+              import shutil
+              for name in allowed:
+                  path=pathlib.Path(name)
+                  if path.is_dir():shutil.rmtree(path)
+                  elif path.exists():path.unlink()
+              archive.extractall('.',members=members,filter='data')
+          source=json.load(open('release.json'));manifest=json.load(open('/tmp/gdworld-build.json'))
+          assert source['build_id']==manifest['build_id']
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f README.md LICENSE UPSTREAM.json .gitignore vendor runtime gdworld scripts tests config release.json
+          if ! git diff --cached --quiet; then
+            git commit -m "[FEATURE] Publish source for ${{ steps.build.outputs.tag }}" -m 'Co-authored-by: OpenAI Codex <noreply@openai.com>'
+            git push origin HEAD:main
+          fi
+      - name: Publish GitHub Release
+        if: steps.build.outputs.new == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag='${{ steps.build.outputs.tag }}'
+          cat > /tmp/gdworld-notes.md <<'NOTES'
+          GDWorld launcher: GravitLauncher 5.7.14, native account dashboard, loading mini-games and five interface languages.
+
+          - **Windows:** Launcher.exe
+          - **Linux / Java:** Launcher.jar
+          - **Full matching source:** source.tar.gz and the source commit linked to this release
+          - **Checksums:** SHA256SUMS
+
+          Existing launchers update through the GDWorld Gravit server. Release files are fetched from an immutable build snapshot and checked against its SHA-256 manifest before publication.
+          NOTES
+          # A draft can be resumed after an interrupted upload. Never replace a published release.
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --draft --target "$(git rev-parse HEAD)" --title "GDWorld · $tag" --notes-file /tmp/gdworld-notes.md
+          fi
+          gh release upload "$tag" /tmp/gdworld-release/Launcher.jar /tmp/gdworld-release/Launcher.exe /tmp/gdworld-release/source.tar.gz /tmp/gdworld-release/SHA256SUMS --clobber
+          gh release edit "$tag" --draft=false --latest
