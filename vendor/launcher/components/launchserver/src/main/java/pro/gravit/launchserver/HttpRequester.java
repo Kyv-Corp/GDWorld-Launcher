@@ -1,0 +1,120 @@
+package pro.gravit.launchserver;
+
+import com.google.gson.JsonElement;
+import pro.gravit.launcher.base.Launcher;
+import pro.gravit.launcher.base.HttpHelper;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+
+public class HttpRequester {
+    private transient final HttpClient httpClient = HttpClient.newBuilder().build();
+
+    public HttpRequester() {
+    }
+
+    public <T> SimpleErrorHandler<T> makeEH(Class<T> clazz) {
+        return new SimpleErrorHandler<>(clazz);
+    }
+
+    public <T> SimpleErrorHandler<T> makeEH(Type clazz) {
+        return new SimpleErrorHandler<>(clazz);
+    }
+
+    public <T> HttpRequest get(String url, String token) {
+        try {
+            var requestBuilder = HttpRequest.newBuilder()
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .uri(new URI(url))
+                    .header("Content-Type", "application/json; charset=UTF-8")
+                    .header("Accept", "application/json")
+                    .timeout(Duration.ofMillis(10000));
+            if (token != null) {
+                requestBuilder.header("Authorization", "Bearer ".concat(token));
+            }
+            return requestBuilder.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T> HttpRequest post(String url, T request, String token) {
+        try {
+            var requestBuilder = HttpRequest.newBuilder()
+                    .method("POST", HttpRequest.BodyPublishers.ofString(Launcher.gsonManager.gson.toJson(request)))
+                    .uri(new URI(url))
+                    .header("Content-Type", "application/json; charset=UTF-8")
+                    .header("Accept", "application/json")
+                    .timeout(Duration.ofMillis(10000));
+            if (token != null) {
+                requestBuilder.header("Authorization", "Bearer ".concat(token));
+            }
+            return requestBuilder.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T> HttpHelper.HttpOptional<T, SimpleError> send(HttpRequest request, Class<T> clazz) throws IOException {
+        return HttpHelper.send(httpClient, request, makeEH(clazz));
+    }
+
+    public <T> HttpHelper.HttpOptional<T, SimpleError> send(HttpRequest request, Type type) throws IOException {
+        return HttpHelper.send(httpClient, request, makeEH(type));
+    }
+
+    public <T> CompletableFuture<HttpHelper.HttpOptional<T, SimpleError>> sendAsync(HttpRequest request, Type type) {
+        return HttpHelper.sendAsync(httpClient, request, makeEH(type));
+    }
+
+
+    public static class SimpleErrorHandler<T> implements HttpHelper.HttpJsonErrorHandler<T, SimpleError> {
+        private final Type type;
+
+        private SimpleErrorHandler(Type type) {
+            this.type = type;
+        }
+
+        @Override
+        public HttpHelper.HttpOptional<T, SimpleError> applyJson(JsonElement response, int statusCode) {
+            if (statusCode < 200 || statusCode >= 300) {
+                SimpleError error = null;
+                try {
+                    error = Launcher.gsonManager.gson.fromJson(response, SimpleError.class);
+                } catch (Exception ignored) {
+                }
+                if (error == null || (error.error == null && error.code == 0)) {
+                    error = new SimpleError("HTTP " + statusCode);
+                    error.code = statusCode;
+                }
+                return new HttpHelper.HttpOptional<>(null, error, statusCode);
+            }
+            if (type == Void.class) {
+                return new HttpHelper.HttpOptional<>(null, null, statusCode);
+            }
+            return new HttpHelper.HttpOptional<>(Launcher.gsonManager.gson.fromJson(response, type), null, statusCode);
+        }
+    }
+
+    public static class SimpleError {
+        public String error;
+        public int code;
+
+        public SimpleError(String error) {
+            this.error = error;
+        }
+
+        @Override
+        public String toString() {
+            return "SimpleError{" +
+                    "error='" + error + '\'' +
+                    ", code=" + code +
+                    '}';
+        }
+    }
+}

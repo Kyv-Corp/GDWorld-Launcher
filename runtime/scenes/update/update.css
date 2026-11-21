@@ -1,0 +1,25 @@
+.scene-header { -fx-text-fill: -fx-colors-text; -fx-font-size: 20px; -fx-font-weight: bold; }
+.download-panel {
+    -fx-background-color: -fx-glass;
+    -fx-background-radius: 18px;
+}
+.download-caption {
+    -fx-text-fill: -fx-colors-text-secondary;
+    -fx-font-family: 'System';
+    -fx-font-size: 12px;
+}
+#outputUpdate {
+    -fx-text-fill: -fx-colors-text;
+    -fx-font-family: 'System';
+    -fx-font-size: 13px;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+#outputUpdate .content, #outputUpdate .viewport, #outputUpdate .scroll-pane { -fx-background-color: transparent; }
+#speed { -fx-text-fill: #daa520; -fx-font-family: 'System'; -fx-font-size: 16px; -fx-font-weight: bold; }
+#speed-text, #volume { -fx-text-fill: -fx-colors-text-secondary; -fx-font-family: 'System'; -fx-font-size: 12px; }
+.speedError { -fx-text-fill: -fx-red; -fx-font-family: 'System'; -fx-font-size: 13px; }
+#progress { -fx-min-height: 8px; -fx-pref-height: 8px; -fx-max-height: 8px; -fx-background-color: -fx-colors-baseG; -fx-background-radius: 5px; }
+#progress > .bar { -fx-background-color: linear-gradient(to right, #ffd300, #daa520); -fx-background-insets: 0; -fx-padding: 4px; -fx-background-radius: 5px; }
+#progress > .track { -fx-background-color: transparent; -fx-background-insets: 0; }
+#progress.progressError > .bar { -fx-background-color: -fx-red; }

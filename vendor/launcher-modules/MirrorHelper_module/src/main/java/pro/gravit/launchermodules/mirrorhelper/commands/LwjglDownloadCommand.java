@@ -1,0 +1,183 @@
+package pro.gravit.launchermodules.mirrorhelper.commands;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import pro.gravit.launchserver.LaunchServer;
+import pro.gravit.launchserver.command.Command;
+import pro.gravit.utils.helper.IOHelper;
+import pro.gravit.utils.helper.JVMHelper;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+public class LwjglDownloadCommand extends Command {
+    private transient final Logger logger = LogManager.getLogger();
+
+    public LwjglDownloadCommand(LaunchServer server) {
+        super(server);
+    }
+
+    public static OSArchPair getFromLwjglNativeName(String name) {
+        int pos = name.indexOf("-");
+        JVMHelper.ARCH arch;
+        JVMHelper.OS os;
+        if (pos < 0) {
+            arch = JVMHelper.ARCH.X86_64;
+            os = getOS(name);
+        } else {
+            os = getOS(name.substring(0, pos));
+            arch = getArch(name.substring(pos + 1));
+        }
+        return new OSArchPair(arch, os);
+    }
+
+    private static JVMHelper.ARCH getArch(String name) {
+        return switch (name) {
+            case "x86" -> JVMHelper.ARCH.X86;
+            case "arm64" -> JVMHelper.ARCH.ARM64;
+            case "arm32" -> JVMHelper.ARCH.ARM32;
+            case "x86-64" -> JVMHelper.ARCH.X86_64;
+            default -> throw new IllegalArgumentException(name);
+        };
+    }
+
+    private static JVMHelper.OS getOS(String name) {
+        return switch (name) {
+            case "windows" -> JVMHelper.OS.MUSTDIE;
+            case "linux" -> JVMHelper.OS.LINUX;
+            case "macos" -> JVMHelper.OS.MACOSX;
+            default -> throw new IllegalArgumentException(name);
+        };
+    }
+
+    @Override
+    public String getArgsDescription() {
+        return "[version] [client dir]";
+    }
+
+    @Override
+    public String getUsageDescription() {
+        return "download lwjgl 3.3.0+";
+    }
+
+    @Override
+    public void invoke(String... args) throws Exception {
+        verifyArgs(args, 2);
+        String version = args[0];
+        Path clientDir = Path.of(args[1]);
+        Path lwjglDir = clientDir.resolve("libraries").resolve("org").resolve("lwjgl");
+        Path natives = clientDir.resolve("natives");
+        List<String> components = List.of("lwjgl", "lwjgl-stb", "lwjgl-opengl", "lwjgl-openal", "lwjgl-glfw", "lwjgl-tinyfd", "lwjgl-jemalloc", "lwjgl-freetype", "lwjgl-sdl", "lwjgl-spng", "lwjgl-vma", "lwjgl-spvc", "lwjgl-shaderc");
+        List<String> archs = List.of("linux", "windows", "windows-x86", "windows-arm64", "macos", "macos-arm64", "linux-arm64", "linux-arm32");
+
+        String mirror = "https://repo1.maven.org/maven2/org/lwjgl/";
+        if(version.contains("SNAPSHOT")) { // SNAPSHOT versions
+            mirror = "https://central.sonatype.com/repository/maven-snapshots/org/lwjgl/";
+        }
+
+        for (String component : components) {
+            // Local file will still be named cleanly like lwjgl-3.3.3-SNAPSHOT.jar
+            Path jarPath = lwjglDir.resolve(component).resolve(version).resolve(component.concat("-").concat(version).concat(".jar"));
+            Path jarDirPath = jarPath.getParent();
+            Files.createDirectories(jarDirPath);
+
+            String prepareUrl = mirror
+                    .concat(component)
+                    .concat("/")
+                    .concat(version)
+                    .concat("/");
+
+            // Resolve exact snapshot timestamp file name
+            String resolvedVersion = resolveSnapshotVersion(mirror, component, version);
+
+            URL jarUrl = new URI(prepareUrl
+                    .concat("%s-%s.jar".formatted(component, resolvedVersion))).toURL();
+            logger.info("Download {} to {}", jarUrl, jarPath);
+            try {
+                download(jarUrl, jarPath);
+            } catch (FileNotFoundException e) {
+                logger.warn("{} not found, skipping", jarUrl);
+            }
+
+            for (String arch : archs) {
+                URL nativesUrl = new URI(prepareUrl
+                        .concat("%s-%s-natives-%s.jar".formatted(component, resolvedVersion, arch))).toURL();
+                var pair = getFromLwjglNativeName(arch);
+                Path nativesPath = natives.resolve(pair.os.name.toLowerCase()).resolve(pair.arch.name.toLowerCase());
+                IOHelper.createParentDirs(nativesPath);
+                logger.info("Download natives {}", nativesUrl);
+                List<String> processedFiles = new ArrayList<>();
+                try (ZipInputStream input = new ZipInputStream(IOHelper.newInput(nativesUrl))) {
+                    ZipEntry entry = input.getNextEntry();
+                    while (entry != null) {
+                        if (!entry.isDirectory() && !entry.getName().startsWith("META-INF")
+                                && !entry.getName().endsWith(".sha1") && !entry.getName().endsWith(".git")) {
+                            Path path = Paths.get(entry.getName());
+                            String filename = path.getFileName().toString();
+                            logger.info("Process {}", filename);
+                            if (processedFiles.contains(filename)) {
+                                if ("windows-x86".equals(arch)) {
+                                    String oldName = filename;
+                                    int index = filename.indexOf(".");
+                                    filename = filename.substring(0, index).concat("32").concat(filename.substring(index));
+                                    logger.info("Change name {} to {}", oldName, filename);
+                                } else {
+                                    logger.warn("Duplicate {}", filename);
+                                }
+                            }
+                            IOHelper.transfer(input, nativesPath.resolve(filename));
+                            processedFiles.add(filename);
+                        }
+                        entry = input.getNextEntry();
+                    }
+                } catch (FileNotFoundException e) {
+                    logger.warn("Skip {}", nativesUrl);
+                }
+            }
+            logger.info("Complete");
+        }
+    }
+
+    private String resolveSnapshotVersion(String mirror, String component, String version) {
+        if (!version.endsWith("-SNAPSHOT")) return version;
+        try {
+            URL url = new URI(mirror + component + "/" + version + "/maven-metadata.xml").toURL();
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            try (InputStream input = IOHelper.newInput(url)) {
+                Document doc = dBuilder.parse(input);
+                doc.getDocumentElement().normalize();
+                String timestamp = doc.getElementsByTagName("timestamp").item(0).getTextContent();
+                String buildNumber = doc.getElementsByTagName("buildNumber").item(0).getTextContent();
+                return version.replace("SNAPSHOT", timestamp + "-" + buildNumber);
+            }
+        } catch (Exception e) {
+            logger.warn("Failed to resolve maven-metadata.xml for snapshot {} {}: {}", component, version, e.getMessage());
+            return version; // Fallback to raw string just in case
+        }
+    }
+
+    private void download(URL url, Path target) throws IOException {
+        if (Files.exists(target)) return;
+        try (InputStream input = IOHelper.newInput(url)) {
+            try (OutputStream output = new FileOutputStream(target.toFile())) {
+                IOHelper.transfer(input, output);
+            }
+        }
+    }
+
+    public record OSArchPair(JVMHelper.ARCH arch, JVMHelper.OS os) {
+
+    }
+}

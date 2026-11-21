@@ -1,0 +1,116 @@
+package pro.gravit.launcher.base.profiles.optional;
+
+import pro.gravit.launcher.core.LauncherNetworkAPI;
+import pro.gravit.launcher.base.profiles.optional.actions.OptionalAction;
+import pro.gravit.launcher.core.api.features.ProfileFeatureAPI;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+public class OptionalFile implements ProfileFeatureAPI.OptionalMod {
+    @LauncherNetworkAPI
+    public List<OptionalAction> actions;
+    @LauncherNetworkAPI
+    public boolean mark;
+    @LauncherNetworkAPI
+    public boolean visible = true;
+    @LauncherNetworkAPI
+    public String name;
+    @LauncherNetworkAPI
+    public String info;
+    @LauncherNetworkAPI
+    public List<pro.gravit.launcher.base.profiles.optional.triggers.OptionalTrigger> triggersList;
+    @LauncherNetworkAPI
+    public OptionalDepend[] dependenciesFile;
+    @LauncherNetworkAPI
+    public OptionalDepend[] conflictFile;
+    @LauncherNetworkAPI
+    public OptionalDepend[] groupFile;
+    @LauncherNetworkAPI
+    public transient OptionalFile[] dependencies;
+    @LauncherNetworkAPI
+    public transient OptionalFile[] conflict;
+    @LauncherNetworkAPI
+    public transient OptionalFile[] group;
+    @LauncherNetworkAPI
+    public int subTreeLevel = 1;
+    @LauncherNetworkAPI
+    public boolean isPreset;
+    @LauncherNetworkAPI
+    public boolean limited;
+    @LauncherNetworkAPI
+    private transient int cachedDepth = -1;
+
+    @LauncherNetworkAPI
+    public String category;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OptionalFile that = (OptionalFile) o;
+        return Objects.equals(name, that.name);
+    }
+
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getDescription() {
+        return info;
+    }
+
+    @Override
+    public String getCategory() {
+        return category;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    @Override
+    public Set<ProfileFeatureAPI.OptionalMod> getDependencies() {
+        if(dependencies == null) {
+            return Set.of();
+        }
+        return Set.of(dependencies);
+    }
+
+    public boolean isMark() {
+        return mark;
+    }
+
+    @Override
+    public int getDepth() {
+        if (cachedDepth >= 0) return cachedDepth;
+        cachedDepth = computeDepth(new HashSet<>());
+        return cachedDepth;
+    }
+
+    private int computeDepth(Set<OptionalFile> visited) {
+        if (dependencies == null || dependencies.length == 0) {
+            return 0;
+        }
+        int max = 0;
+        for (OptionalFile dep : dependencies) {
+            if (visited.contains(dep)) continue;
+            visited.add(dep);
+            int depDepth;
+            if (dep.isVisible()) {
+                depDepth = dep.computeDepth(visited) + 1;
+            } else {
+                depDepth = dep.computeDepth(visited);
+            }
+            if (depDepth > max) max = depDepth;
+        }
+        return max;
+    }
+}

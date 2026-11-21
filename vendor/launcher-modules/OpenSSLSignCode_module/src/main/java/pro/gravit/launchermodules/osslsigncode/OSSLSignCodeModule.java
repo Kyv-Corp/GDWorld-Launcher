@@ -1,0 +1,95 @@
+package pro.gravit.launchermodules.osslsigncode;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pro.gravit.launcher.base.config.JsonConfigurable;
+import pro.gravit.launcher.base.modules.LauncherInitContext;
+import pro.gravit.launcher.base.modules.LauncherModule;
+import pro.gravit.launcher.base.modules.LauncherModuleInfoBuilder;
+import pro.gravit.launcher.core.api.features.CoreFeatureAPI;
+import pro.gravit.launchserver.LaunchServer;
+import pro.gravit.launchserver.binary.tasks.LauncherBuildTask;
+import pro.gravit.launchserver.binary.tasks.exe.BuildExeMainTask;
+import pro.gravit.launchserver.modules.events.LaunchServerPostInitPhase;
+import pro.gravit.launchserver.modules.impl.LaunchServerInitContext;
+import pro.gravit.utils.Version;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
+public class OSSLSignCodeModule extends LauncherModule {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(OSSLSignCodeModule.class);
+
+    public OSSLSignCodeConfig config;
+
+    public OSSLSignCodeModule() {
+        super(new LauncherModuleInfoBuilder().setName("OSSLSignCode").setVersion(new Version(1, 0, 0)).setDependencies(new String[]{"LaunchServerCore"}).createLauncherModuleInfo());
+    }
+
+    @Override
+    public void init(LauncherInitContext initContext) {
+        if (initContext instanceof LaunchServerInitContext launchServerInitContext) {
+            initOSSLSignCode(launchServerInitContext.server);
+        } else {
+            registerEvent(this::registerTask, LaunchServerPostInitPhase.class);
+        }
+    }
+
+    public void registerTask(LaunchServerPostInitPhase event) {
+        initOSSLSignCode(event.server);
+    }
+
+    public void initOSSLSignCode(LaunchServer server) {
+        Path configPath = modulesConfigManager.getModuleConfig(moduleInfo.name);
+        OSSLSignCodeModule module = this;
+        JsonConfigurable<OSSLSignCodeConfig> configurable = new JsonConfigurable<>(OSSLSignCodeConfig.class, configPath) {
+            @Override
+            public OSSLSignCodeConfig getConfig() {
+                return config;
+            }
+
+            @Override
+            public void setConfig(OSSLSignCodeConfig config) {
+                module.config = config;
+            }
+
+            @Override
+            public OSSLSignCodeConfig getDefaultConfig() {
+                return OSSLSignCodeConfig.getDefault();
+            }
+        };
+        try {
+            configurable.loadConfig();
+        } catch (IOException e) {
+            logger.error("", e);
+            return;
+        }
+        config = configurable.getConfig();
+        server.commandHandler.registerCommand("osslsignexe", new OSSLSignEXECommand(server, config));
+        
+        // Choose the appropriate task based on signing method
+        LauncherBuildTask task;
+        if (config.signingMethod == OSSLSignCodeConfig.SigningMethod.SIGNTOOL) {
+            logger.info("Using Windows signtool for signing");
+            task = new SigntoolTask(server, config);
+        } else {
+            logger.info("Using osslsigncode for signing");
+            task = new OSSLSignTask(server, config);
+        }
+        
+        tryAddTask(server, CoreFeatureAPI.UpdateVariant.EXE_WINDOWS_X86_64, task);
+        tryAddTask(server, CoreFeatureAPI.UpdateVariant.EXE_WINDOWS_X86, task);
+        tryAddTask(server, CoreFeatureAPI.UpdateVariant.EXE_WINDOWS_ARM64, task);
+    }
+
+    public boolean tryAddTask(LaunchServer server, CoreFeatureAPI.UpdateVariant variant, LauncherBuildTask task) {
+        var launcherBinary = server.launcherBinaries.get(variant);
+        if(launcherBinary == null) {
+            return false;
+        }
+        launcherBinary.addAfter((t) -> t instanceof BuildExeMainTask, task);
+        return true;
+    }
+}

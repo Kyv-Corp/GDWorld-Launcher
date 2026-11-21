@@ -1,0 +1,7 @@
+{
+  "createAccountURL": "https://gd-network.ddns.net/auth/register",
+  "forgotPassURL": "https://gd-network.ddns.net/auth/reset",
+  "disableDebugByDefault": true,
+  "locale": "RUSSIAN",
+  "downloadThreads": 4
+}

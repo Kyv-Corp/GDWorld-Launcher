@@ -1,0 +1,17 @@
+{
+  "launcher": {
+    "repository": "https://github.com/GravitLauncher/Launcher",
+    "tag": "v5.7.14",
+    "commit": "71cc94e4e44abc5c71d661392bc5afd31e429f8e"
+  },
+  "java-runtime": {
+    "repository": "https://github.com/GravitLauncher/LauncherRuntime",
+    "tag": "v5.0.9",
+    "commit": "bef1c22e545d7d68af6acc99c0284ebc78a707c8",
+    "official_jar_sha256": "67c7e22f3b1119c13138f6a235cb25f7e95a1bb39a5c0f6ae4d4cf36e178c5b6"
+  },
+  "launcher-modules": {
+    "repository": "https://github.com/GravitLauncher/LauncherModules",
+    "commit": "403355fe0509ce03b1915aac766d85b243ba5cdc"
+  }
+}

@@ -1,0 +1,13 @@
+/build/
+.gradle/
+**/build/
+**/.gradle/
+**/__pycache__/
+*.class
+*.log
+.env
+*-secrets.json
+*.credentials
+*.jks
+*.p12
+*.key

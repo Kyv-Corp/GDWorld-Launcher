@@ -1,0 +1,220 @@
+package pro.gravit.utils.helper;
+
+import com.google.gson.*;
+import pro.gravit.utils.command.CommandException;
+import pro.gravit.utils.launch.LaunchOptions;
+
+import java.lang.reflect.Type;
+import java.util.*;
+
+public final class CommonHelper {
+
+    private CommonHelper() {
+    }
+
+    public static Thread newThread(String name, boolean daemon, Runnable runnable) {
+        var builder = Thread.ofPlatform().daemon(daemon);
+        return name == null ? builder.unstarted(runnable) : builder.name(name).unstarted(runnable);
+    }
+
+    public static String replace(String source, String... params) {
+        for (int i = 0; i < params.length; i += 2)
+            source = source.replace('%' + params[i] + '%', params[i + 1]);
+        return source;
+    }
+
+    public static String replace(Map<String, String> replaceMap, String arg) {
+        for(var e : replaceMap.entrySet()) {
+            arg = arg.replace(e.getKey(), e.getValue());
+        }
+        return arg;
+    }
+
+    public static List<String> replace(Map<String, String> replaceMap, List<String> args) {
+        List<String> updatedList = new ArrayList<>(args.size());
+        for(var e : args) {
+            updatedList.add(replace(replaceMap, e));
+        }
+        return updatedList;
+    }
+
+
+    public static GsonBuilder newBuilder() {
+        return new GsonBuilder().registerTypeHierarchyAdapter(byte[].class,
+                ByteArrayToBase64TypeAdapter.INSTANCE);
+    }
+
+
+    public static ArgsParseResult parseJavaArgs(List<String> args) {
+        List<String> classpath = new ArrayList<>();
+        List<String> jvmArgs = new ArrayList<>();
+        List<String> runArgs = new ArrayList<>();
+        String jarFile = null;
+        String mainClass = null;
+        String mainModule = null;
+        LaunchOptions.ModuleConf conf = new LaunchOptions.ModuleConf();
+        var prevArgType = PrevArgType.NONE;
+        boolean runArgsBoolean = false;
+        boolean first = false;
+        for(var arg : args) {
+            if(runArgsBoolean) {
+                runArgs.add(arg);
+                continue;
+            }
+            if(!first) {
+                if(!arg.startsWith("-")) {
+                    continue;
+                }
+                first = true;
+            }
+            switch (prevArgType) {
+                case NONE -> {
+
+                }
+                case MODULE_PATH -> {
+                    char c = ':';
+                    int i = arg.indexOf(c);
+                    if(i<0) {
+                        c = ';';
+                    }
+                    String[] l = arg.split(Character.toString(c));
+                    conf.modulePath.addAll(Arrays.asList(l));
+                    prevArgType = PrevArgType.NONE;
+                    continue;
+                }
+                case CLASSPATH -> {
+                    char c = ':';
+                    int i = arg.indexOf(c);
+                    if(i<0) {
+                        c = ';';
+                    }
+                    String[] l = arg.split(Character.toString(c));
+                    classpath.addAll(Arrays.asList(l));
+                    prevArgType = PrevArgType.POST_CLASSPATH;
+                    continue;
+                }
+                case ADD_MODULES -> {
+                    String[] l = arg.split(",");
+                    conf.modules.addAll(Arrays.asList(l));
+                    prevArgType = PrevArgType.NONE;
+                    continue;
+                }
+                case ADD_OPENS -> {
+                    String[] l = arg.split("=");
+                    conf.opens.put(l[0], l[1]);
+                    prevArgType = PrevArgType.NONE;
+                    continue;
+                }
+                case ADD_EXPORTS -> {
+                    String[] l = arg.split("=");
+                    conf.exports.put(l[0], l[1]);
+                    prevArgType = PrevArgType.NONE;
+                    continue;
+                }
+                case ADD_READS -> {
+                    String[] l = arg.split("=");
+                    if(l.length != 2) {
+                        continue;
+                    }
+                    conf.reads.put(l[0], l[1]);
+                    prevArgType = PrevArgType.NONE;
+                    continue;
+                }
+                case MODULE -> {
+                    String[] l = arg.split("/");
+                    mainModule = l[0];
+                    mainClass = l[1];
+                    runArgsBoolean = true;
+                    prevArgType = PrevArgType.NONE;
+                    continue;
+                }
+                case POST_CLASSPATH -> {
+                    mainClass = arg;
+                    runArgsBoolean = true;
+                    prevArgType = PrevArgType.NONE;
+                    continue;
+                }
+                case JAR -> {
+                    jarFile = arg;
+                    runArgsBoolean = true;
+                    prevArgType = PrevArgType.NONE;
+                    continue;
+                }
+            }
+            switch (arg) {
+                case "--module-path", "-p" -> {
+                    prevArgType = PrevArgType.MODULE_PATH;
+                    continue;
+                }
+                case "--classpath", "-cp" -> {
+                    prevArgType = PrevArgType.CLASSPATH;
+                    continue;
+                }
+                case "--add-modules" -> {
+                    prevArgType = PrevArgType.ADD_MODULES;
+                    continue;
+                }
+                case "--add-opens" -> {
+                    prevArgType = PrevArgType.ADD_OPENS;
+                    continue;
+                }
+                case "--add-exports" -> {
+                    prevArgType = PrevArgType.ADD_EXPORTS;
+                    continue;
+                }
+                case "--add-reads" -> {
+                    prevArgType = PrevArgType.ADD_READS;
+                    continue;
+                }
+                case "--module", "-m" -> {
+                    prevArgType = PrevArgType.MODULE;
+                    continue;
+                }
+                case "-jar" -> {
+                    prevArgType = PrevArgType.JAR;
+                    continue;
+                }
+            }
+            jvmArgs.add(arg);
+        }
+        return new ArgsParseResult(conf, classpath, jvmArgs, mainClass, mainModule, jarFile, args);
+    }
+
+    public static <K, V> V multimapFirstOrNullValue(K key, Map<K, List<V>> params) {
+        List<V> list = params.getOrDefault(key, Collections.emptyList());
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.getFirst();
+    }
+
+    public record ArgsParseResult(LaunchOptions.ModuleConf conf, List<String> classpath, List<String> jvmArgs, String mainClass, String mainModule, String jarFile, List<String> args) {
+
+    }
+
+    private enum PrevArgType {
+        NONE, MODULE_PATH, ADD_MODULES, ADD_OPENS, ADD_EXPORTS, ADD_READS, CLASSPATH, POST_CLASSPATH, JAR, MAINCLASS, MODULE
+    }
+
+    private static class ByteArrayToBase64TypeAdapter implements JsonSerializer<byte[]>, JsonDeserializer<byte[]> {
+        private static final ByteArrayToBase64TypeAdapter INSTANCE = new ByteArrayToBase64TypeAdapter();
+        private final Base64.Decoder decoder = Base64.getUrlDecoder();
+        private final Base64.Encoder encoder = Base64.getUrlEncoder();
+
+        public byte[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            if (json.isJsonArray()) {
+                JsonArray byteArr = json.getAsJsonArray();
+                byte[] arr = new byte[byteArr.size()];
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = byteArr.get(i).getAsByte();
+                }
+                return arr;
+            }
+            return decoder.decode(json.getAsString());
+        }
+
+        public JsonElement serialize(byte[] src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(encoder.encodeToString(src));
+        }
+    }
+}

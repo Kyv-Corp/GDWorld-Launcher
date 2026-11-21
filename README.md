@@ -1,2 +1,41 @@
-# GDWorld-Launcher
-GDWorld launcher source, native account dashboard, loading mini-games and public releases. Based on GravitLauncher.
+# GDWorld Launcher
+
+Исходники лаунчера GDWorld на базе GravitLauncher 5.7.14 / JavaRuntime 5.0.9.
+
+[Скачать Windows EXE](https://github.com/Best-Jaro/GDWorld-Launcher/releases/latest/download/Launcher.exe) · [Скачать JAR](https://github.com/Best-Jaro/GDWorld-Launcher/releases/latest/download/Launcher.jar) · [Релизы и SHA-256](https://github.com/Best-Jaro/GDWorld-Launcher/releases)
+
+## Что находится в репозитории
+
+- `gdworld/java` — наш код: нативный кабинет скинов/плащей, мини-игры во время загрузки, переводы, кнопки профиля и установщик изменений runtime.
+- `runtime` — фактически опубликованные FXML, CSS, картинки и все пять языков интерфейса.
+- `vendor/launcher` — исходники ядра GravitLauncher и LaunchServer.
+- `vendor/java-runtime` — исходники оригинального JavaFX-интерфейса.
+- `vendor/launcher-modules` — точная версия официальных модулей, указанная upstream.
+- `UPSTREAM.json` — версии, ссылки и закреплённые коммиты компонентов.
+- `scripts` — сборка интерфейса; `tests` — проверки правил мини-игр и JavaFX с фиктивными данными.
+
+Код дополнений распространяется под GPLv3. Лицензии и авторские уведомления исходных проектов сохранены. Название, логотип и иллюстрации GDWorld принадлежат их владельцам; публикация кода не передаёт права на товарные обозначения и чужие изображения.
+
+## Как работает лаунчер
+
+Входит в аккаунт GDWorld через Gravit с UnicoreCMS, получает профиль сборки, проверяет и скачивает её файлы и Java, затем запускает Minecraft. Кабинет использует текущую сессию: загружает или сбрасывает скин/плащ через API GDWorld. Мини-игры работают локально и не требуют сети. Язык выбирается в настройках лаунчера: русский, английский, украинский, белорусский, польский.
+
+Адрес проекта: `https://gd-network.ddns.net`. Вход Microsoft/LittleSkin ещё не настроен. Исходники серверной CMS, базы пользователей и приватные ключи не являются частью клиентского лаунчера.
+
+## Сборка из исходников
+
+Нужны JDK 21+ (для современных версий Gradle рекомендуется JDK 25), Python 3 и доступ к Maven/Gradle. Запустите `bash scripts/build-runtime.sh`: сценарий копирует чистый upstream в `build`, добавляет наши исходники и два обработчика экрана загрузки, собирает `JavaRuntime.jar` через Gradle. Папка `vendor` не изменяется. Готовый интерфейс — `build/java-runtime/build/libs/JavaRuntime.jar`, тема — `build/runtime`.
+
+Для полной сборки ядра используйте исходники `vendor/launcher`, предварительно скопировав `vendor/launcher-modules` в `vendor/launcher/modules`, и штатный `./gradlew installDist`. Настройка собственного LaunchServer: [официальная инструкция](https://gravitlauncher.com/quickstart). Подключите собранный JavaRuntime и тему, добавьте правило ProGuard `-keep class pro.gravit.launcher.gui.components.LoadingGames { *; }`, настройте собственную авторизацию, сертификат и адрес проекта, затем выполните `build` в LaunchServer. Пример публичных настроек интерфейса — `config/JavaRuntime.json`.
+
+Рабочие бинарники GDWorld подписываются ключом проекта и обфусцируются штатным сборщиком Gravit. Самостоятельная сборка использует ваши ключи и настройки, поэтому побайтовое совпадение с релизом не обещается. `PatchRuntime.java` также показывает точную логику установки наших изменений поверх официального JavaRuntime.jar; основной способ сборки в этом репозитории использует исходники.
+
+## Проверка скачанного файла
+
+В каждом релизе находятся `Launcher.exe`, `Launcher.jar`, полный снимок исходников и `SHA256SUMS`. Linux: `sha256sum -c SHA256SUMS`; PowerShell: `Get-FileHash .\Launcher.exe -Algorithm SHA256`. Сравните результат со значением для вашего файла. Контрольная сумма подтверждает совпадение файла с релизом; открытый код даёт возможность изучить его поведение и собрать свою версию.
+
+## Автоматические релизы
+
+После штатной сборки Gravit сервер автоматически сохраняет согласованную пару JAR/EXE, публичные исходники и SHA-256 в неизменяемый каталог сборки. GitHub Actions проверяет новые сборки примерно каждые пять минут (запуск может задерживаться GitHub), переносит исходники в историю этого репозитория и публикует релиз. Ручной запуск доступен в Actions → Publish launcher → Run workflow. Кнопки сайта ведут на `releases/latest/download`.
+
+Установленные лаунчеры обновляются непосредственно через Gravit. Поэтому публикация GitHub не задерживает автообновление игроков. Токен GitHub на игровом сервере не хранится: публикация выполняется GitHub Actions через временный `GITHUB_TOKEN`.

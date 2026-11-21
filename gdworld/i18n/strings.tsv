@@ -1,0 +1,79 @@
+# key|en|ru|uk|be|pl
+cabinet|Account|Личный кабинет|Особистий кабінет|Асабісты кабінет|Moje konto
+close|Close|Закрыть|Закрити|Закрыць|Zamknij
+yes|Yes|Да|Так|Так|Tak
+cancel|Cancel|Отмена|Скасувати|Скасаваць|Anuluj
+retry|Retry|Повторить|Повторити|Паўтарыць|Ponów
+loadingProfile|Loading your profile…|Загружаем ваш профиль…|Завантажуємо ваш профіль…|Загружаем ваш профіль…|Wczytywanie profilu…
+slim|Slim arms (Alex / slim)|Тонкие руки (Alex / slim)|Тонкі руки (Alex / slim)|Тонкія рукі (Alex / slim)|Wąskie ramiona (Alex / slim)
+loginFirst|Sign in to the launcher, then open Account beside your username.|Сначала войдите в лаунчер. Затем откройте «Личный кабинет» возле ника.|Спочатку увійдіть у лаунчер. Потім відкрийте «Особистий кабінет» біля ніка.|Спачатку ўвайдзіце ў ланчар. Потым адкрыйце «Асабісты кабінет» каля ніка.|Zaloguj się do launchera, a następnie otwórz „Moje konto” obok nicku.
+noSession|Session unavailable. Sign in to the launcher again.|Сессия недоступна. Войдите в аккаунт лаунчера заново.|Сесія недоступна. Увійдіть у лаунчер знову.|Сесія недаступная. Увайдзіце ў ланчар зноў.|Sesja niedostępna. Zaloguj się ponownie.
+expired|Session expired. Sign out and sign in again.|Сессия истекла. Выйдите из аккаунта лаунчера и войдите снова.|Термін дії сесії минув. Вийдіть з акаунта та увійдіть знову.|Тэрмін сесіі скончыўся. Выйдзіце з уліковага запісу і ўвайдзіце зноў.|Sesja wygasła. Wyloguj się i zaloguj ponownie.
+serviceError|Account service unavailable (%s). Try again.|Сервис кабинета временно недоступен (%s). Попробуйте ещё раз.|Сервіс кабінету тимчасово недоступний (%s). Спробуйте ще раз.|Сэрвіс кабінета часова недаступны (%s). Паспрабуйце яшчэ раз.|Usługa konta jest chwilowo niedostępna (%s). Spróbuj ponownie.
+requestCancelled|Request cancelled.|Запрос отменён.|Запит скасовано.|Запыт скасаваны.|Żądanie anulowane.
+saved|Changes are saved to your GDWorld account.|Изменения сохраняются в вашем аккаунте GDWorld.|Зміни зберігаються у вашому акаунті GDWorld.|Змены захоўваюцца ў вашым уліковым запісе GDWorld.|Zmiany są zapisywane na Twoim koncie GDWorld.
+skin|Skin|Скин|Скін|Скін|Skórka
+cape|Cape|Плащ|Плащ|Плашч|Peleryna
+reconnect|Reconnect to the game server after changing your skin or cape.|После изменения скина или плаща переподключитесь к игровому серверу.|Після зміни скіна або плаща перепідключіться до ігрового сервера.|Пасля змены скіна ці плашча перападключыцеся да гульнявога сервера.|Po zmianie skórki lub peleryny połącz się ponownie z serwerem gry.
+links|Linked accounts|Привязки аккаунтов|Прив’язані акаунти|Прывязаныя ўліковыя запісы|Połączone konta
+notLinked| — not linked| — не привязан| — не прив’язано| — не прывязаны| — niepołączone
+providersPending|Microsoft and LittleSkin sign-in awaits setup. Linking will preserve your username, UUID and game progress.|Вход Microsoft и LittleSkin ожидает настройки. Ник, UUID и игровой прогресс при привязке сохранятся.|Вхід Microsoft і LittleSkin очікує налаштування. Нік, UUID та ігровий прогрес буде збережено.|Уваход Microsoft і LittleSkin чакае наладжвання. Нік, UUID і гульнявы прагрэс пры прывязцы захаваюцца.|Logowanie przez Microsoft i LittleSkin wymaga konfiguracji. Połączenie zachowa nick, UUID i postęp w grze.
+refresh|Refresh|Обновить данные|Оновити дані|Абнавіць даныя|Odśwież
+noTexture|Not uploaded yet|Пока не загружен|Ще не завантажено|Яшчэ не загружаны|Jeszcze nie przesłano
+skinFormat|PNG 64×64 or 64×32 · up to 1 MB|PNG 64×64 или 64×32 · до 1 МБ|PNG 64×64 або 64×32 · до 1 МБ|PNG 64×64 або 64×32 · да 1 МБ|PNG 64×64 lub 64×32 · do 1 MB
+capeFormat|PNG 64×32 · up to 1 MB|PNG 64×32 · до 1 МБ|PNG 64×32 · до 1 МБ|PNG 64×32 · да 1 МБ|PNG 64×32 · do 1 MB
+autoModel|Arm model detected automatically|Модель рук определяется автоматически|Модель рук визначається автоматично|Мадэль рук вызначаецца аўтаматычна|Model ramion jest wykrywany automatycznie
+uploadSkin|Upload skin|Загрузить скин|Завантажити скін|Загрузіць скін|Prześlij skórkę
+uploadCape|Upload cape|Загрузить плащ|Завантажити плащ|Загрузіць плашч|Prześlij pelerynę
+resetSkin|Reset skin|Сбросить скин|Скинути скін|Скінуць скін|Resetuj skórkę
+resetCape|Reset cape|Сбросить плащ|Скинути плащ|Скінуць плашч|Resetuj pelerynę
+chooseSkin|Choose a skin|Выберите скин|Виберіть скін|Выберыце скін|Wybierz skórkę
+chooseCape|Choose a cape|Выберите плащ|Виберіть плащ|Выберыце плашч|Wybierz pelerynę
+uploadingSkin|Uploading skin…|Загружаем скин…|Завантажуємо скін…|Загружаем скін…|Przesyłanie skórki…
+uploadingCape|Uploading cape…|Загружаем плащ…|Завантажуємо плащ…|Загружаем плашч…|Przesyłanie peleryny…
+fileSize|The file must be no larger than 1 MB.|Файл должен быть не больше 1 МБ.|Розмір файлу має бути не більше 1 МБ.|Памер файла павінен быць не большы за 1 МБ.|Plik nie może być większy niż 1 MB.
+confirmSkin|Restore the default skin?|Вернуть стандартный скин?|Повернути стандартний скін?|Вярнуць стандартны скін?|Przywrócić domyślną skórkę?
+confirmCape|Restore the default cape?|Вернуть стандартный плащ?|Повернути стандартний плащ?|Вярнуць стандартны плашч?|Przywrócić domyślną pelerynę?
+resetAppearance|Reset appearance|Сброс внешнего вида|Скидання зовнішності|Скід выгляду|Resetowanie wyglądu
+connectionError|Could not reach your account. Check your connection and try again.|Не удалось связаться с кабинетом. Проверьте соединение и повторите попытку.|Не вдалося зв’язатися з кабінетом. Перевірте з’єднання та спробуйте ще раз.|Не ўдалося звязацца з кабінетам. Праверце злучэнне і паспрабуйце яшчэ раз.|Nie udało się połączyć z kontem. Sprawdź połączenie i spróbuj ponownie.
+mini|Mini-game|Мини-игра|Мінігра|Міні-гульня|Minigra
+preparing|While Minecraft gets ready|Пока готовится Minecraft|Поки готується Minecraft|Пакуль рыхтуецца Minecraft|Podczas przygotowania Minecrafta
+waiting|A game will appear when loading starts|Игра появится при начале загрузки|Гра з’явиться на початку завантаження|Гульня з’явіцца на пачатку загрузкі|Gra pojawi się po rozpoczęciu ładowania
+restart|Restart|Заново|Заново|Нанова|Od nowa
+restartTip|Restart this mini-game|Начать эту мини-игру заново|Почати цю мінігру заново|Пачаць гэтую міні-гульню нанова|Rozpocznij tę minigrę od nowa
+pause|Pause|Пауза|Пауза|Паўза|Pauza
+pauseTip|Pause the mini-game; loading continues|Приостановить мини-игру, не загрузку|Призупинити мінігру; завантаження триватиме|Прыпыніць міні-гульню; загрузка працягваецца|Wstrzymaj minigrę; ładowanie trwa dalej
+resume|Resume|Дальше|Продовжити|Працягнуць|Dalej
+flag|Flag|Флаг|Прапор|Сцяжок|Flaga
+flagTip|Toggle flag placement|Переключить установку флажков|Перемкнути встановлення прапорців|Пераключыць усталяванне сцяжкоў|Przełącz stawianie flag
+up|Snake: up|Змейка: вверх|Змійка: вгору|Змейка: уверх|Wąż: w górę
+left|Snake: left|Змейка: влево|Змійка: ліворуч|Змейка: улева|Wąż: w lewo
+down|Snake: down|Змейка: вниз|Змійка: вниз|Змейка: уніз|Wąż: w dół
+right|Snake: right|Змейка: вправо|Змійка: праворуч|Змейка: управа|Wąż: w prawo
+loadInterrupted|Loading interrupted. See the error on the right.|Загрузка прервана. Подробности ошибки справа.|Завантаження перервано. Подробиці помилки праворуч.|Загрузка перарваная. Падрабязнасці памылкі справа.|Ładowanie przerwane. Szczegóły błędu po prawej.
+unavailable|Mini-game unavailable. Loading continues.|Мини-игра недоступна. Загрузка продолжается.|Мінігра недоступна. Завантаження триває.|Міні-гульня недаступная. Загрузка працягваецца.|Minigra niedostępna. Ładowanie trwa dalej.
+snake|Snake|Змейка|Змійка|Змейка|Wąż
+mines|Minesweeper|Сапёр|Сапер|Сапёр|Saper
+memory|Match pairs|Найди пару|Знайди пару|Знайдзі пару|Znajdź parę
+snakeScore|Score: %s · Collect bright dots|Счёт: %s · Собирай светлые точки|Рахунок: %s · Збирай світлі точки|Лік: %s · Збірай светлыя кропкі|Wynik: %s · Zbieraj jasne kropki
+snakeWon|The board is yours! Press Restart.|Всё поле твоё! Нажми «Заново».|Усе поле твоє! Натисни «Заново».|Усё поле тваё! Націсні «Нанова».|Cała plansza Twoja! Kliknij „Od nowa”.
+snakeLost|Game over. Press Restart.|Игра окончена. Нажми «Заново».|Гру завершено. Натисни «Заново».|Гульня скончаная. Націсні «Нанова».|Koniec gry. Kliknij „Od nowa”.
+snakeHelp|Click board · arrows / WASD\nSpace — pause|Нажми на поле · стрелки / WASD\nПробел — пауза|Натисни на поле · стрілки / WASD\nПробіл — пауза|Націсні на поле · стрэлкі / WASD\nПрабел — паўза|Kliknij planszę · strzałki / WASD\nSpacja — pauza
+minesScore|Mines: %s · Open: %s/71|Мин: %s · Открыто: %s/71|Мін: %s · Відкрито: %s/71|Мін: %s · Адкрыта: %s/71|Miny: %s · Odkryte: %s/71
+minesWon|Board cleared! Press Restart.|Поле очищено! Нажми «Заново».|Поле очищено! Натисни «Заново».|Поле ачышчанае! Націсні «Нанова».|Plansza oczyszczona! Kliknij „Od nowa”.
+minesLost|That was a mine. Try again?|Это была мина. Попробуем ещё?|Це була міна. Спробуємо ще?|Гэта была міна. Паспрабуем яшчэ?|To była mina. Jeszcze raz?
+minesHelp|Left click — open · right click / F — flag\nThe first move is safe|ЛКМ — открыть · ПКМ / F — флажок\nПервый ход безопасный|ЛКМ — відкрити · ПКМ / F — прапорець\nПерший хід безпечний|ЛКМ — адкрыць · ПКМ / F — сцяжок\nПершы ход бяспечны|LPM — odkryj · PPM / F — flaga\nPierwszy ruch jest bezpieczny
+memoryScore|Pairs: %s/6 · Attempts: %s|Найдено: %s/6 · Попыток: %s|Знайдено: %s/6 · Спроб: %s|Знойдзена: %s/6 · Спроб: %s|Pary: %s/6 · Próby: %s
+memoryWon|All pairs found! Press Restart.|Все пары найдены! Нажми «Заново».|Усі пари знайдено! Натисни «Заново».|Усе пары знойдзеныя! Націсні «Нанова».|Wszystkie pary! Kliknij „Od nowa”.
+memoryHelp|Flip cards and remember pairs\nMouse or arrows + Enter|Открывай карточки и запоминай пары\nМышь или стрелки + Enter|Відкривай картки та запам’ятовуй пари\nМиша або стрілки + Enter|Адкрывай карткі і запамінай пары\nМыш або стрэлкі + Enter|Odkrywaj karty i zapamiętuj pary\nMysz lub strzałki + Enter
+pausedHelp|Mini-game paused. Loading continues.|Пауза в мини-игре. Загрузка продолжается.|Мінігру призупинено. Завантаження триває.|Міні-гульня на паўзе. Загрузка працягваецца.|Minigra wstrzymana. Ładowanie trwa dalej.
+loadStopped|Loading stopped|Загрузка остановлена|Завантаження зупинено|Загрузка спыненая|Ładowanie zatrzymane
+victory|You win!|Победа!|Перемога!|Перамога!|Wygrana!
+gameOver|Game over|Игра окончена|Гру завершено|Гульня скончаная|Koniec gry
+boardCleared|Board cleared!|Поле очищено!|Поле очищено!|Поле ачышчанае!|Plansza oczyszczona!
+allPairs|All pairs found!|Все пары найдены!|Усі пари знайдено!|Усе пары знойдзеныя!|Wszystkie pary znalezione!
+prepareGame|PREPARING GAME|ПОДГОТОВКА ИГРЫ|ПІДГОТОВКА ГРИ|ПАДРЫХТОЎКА ГУЛЬНІ|PRZYGOTOWANIE GRY
+checkFiles|Downloading and checking files|Скачивание и проверка файлов|Завантаження та перевірка файлів|Спампоўванне і праверка файлаў|Pobieranie i sprawdzanie plików
+downloadError|Download failed — see details above|Ошибка загрузки — подробности выше|Помилка завантаження — подробиці вище|Памылка загрузкі — падрабязнасці вышэй|Błąd pobierania — szczegóły powyżej
+settingName|Name|Имя|Назва|Назва|Nazwa
+settingDescription|Description|Описание|Опис|Апісанне|Opis

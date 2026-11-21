@@ -1,0 +1,80 @@
+package pro.gravit.launchermodules.startscreen;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pro.gravit.launcher.base.modules.LauncherModuleInfoBuilder;
+import pro.gravit.launcher.client.events.ClientExitPhase;
+import pro.gravit.launcher.runtime.client.events.ClientGuiPhase;
+import pro.gravit.launcher.runtime.client.events.ClientPreGuiPhase;
+import pro.gravit.launcher.client.events.ClientProcessPreInvokeMainClassEvent;
+import pro.gravit.launcher.base.modules.LauncherInitContext;
+import pro.gravit.launcher.base.modules.LauncherModule;
+import pro.gravit.utils.Version;
+import pro.gravit.utils.helper.IOHelper;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+
+public class ModuleImpl extends LauncherModule {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(ModuleImpl.class);
+
+    public static final Version version = new Version(1, 0, 0, 1, Version.Type.LTS);
+    public ImageDisplay screen = null;
+
+    public ModuleImpl() {
+        super(new LauncherModuleInfoBuilder().setName("LauncherStartScreen").setVersion(version).setPriority(Integer.MAX_VALUE - 200).setDependencies(new String[]{"ClientLauncherCore"}).createLauncherModuleInfo());
+    }
+
+    @Override
+    public void init(LauncherInitContext initContext) {
+        registerEvent(this::preInit, ClientPreGuiPhase.class);
+        registerEvent(this::finish, ClientGuiPhase.class);
+        registerEvent(this::exitPhase, ClientExitPhase.class);
+        registerEvent(this::preMainClass, ClientProcessPreInvokeMainClassEvent.class);
+    }
+
+    public void preInit(ClientPreGuiPhase phase) {
+        try {
+            if (!GraphicsEnvironment.isHeadless()) {
+                Config c = new Config();
+                screen = new ImageDisplay(IOHelper.getResourceURL(c.imageURL),
+                        (c.faviconURL != null && !c.faviconURL.equalsIgnoreCase("null"))/* Because of low-skilled admins */ ? ImageIO.read(IOHelper.getResourceURL(c.faviconURL))
+                                : null, c);
+            }
+        } catch (Throwable e) {
+            logger.error("", e);
+        }
+    }
+
+    public void preMainClass(ClientProcessPreInvokeMainClassEvent event) {
+        if (screen != null)
+            try {
+                screen.close();
+                screen = null;
+            } catch (Throwable e) {
+                logger.error("", e);
+            }
+    }
+
+    public void exitPhase(ClientExitPhase exitPhase) {
+        if (screen != null)
+            try {
+                screen.close();
+                screen = null;
+            } catch (Throwable e) {
+                logger.error("", e);
+            }
+    }
+
+    public void finish(ClientGuiPhase context) {
+        if (screen != null)
+            try {
+                screen.close();
+                screen = null;
+            } catch (Throwable e) {
+                logger.error("", e);
+            }
+    }
+}

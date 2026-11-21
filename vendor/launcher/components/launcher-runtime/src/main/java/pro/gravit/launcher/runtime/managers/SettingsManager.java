@@ -1,0 +1,41 @@
+package pro.gravit.launcher.runtime.managers;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pro.gravit.launcher.runtime.NewLauncherSettings;
+import pro.gravit.launcher.runtime.client.DirBridge;
+import pro.gravit.launcher.base.config.JsonConfigurable;
+
+public class SettingsManager extends JsonConfigurable<NewLauncherSettings> {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(SettingsManager.class);
+
+    public static NewLauncherSettings settings;
+
+
+    public SettingsManager() {
+        super(NewLauncherSettings.class, DirBridge.dir.resolve("settings.json"));
+    }
+
+    @Override
+    public NewLauncherSettings getConfig() {
+        return settings;
+    }
+
+    @Override
+    public void setConfig(NewLauncherSettings config) {
+        settings = config;
+        if (settings.consoleUnlockKey != null && !ConsoleManager.isConsoleUnlock) {
+            if (ConsoleManager.checkUnlockKey(settings.consoleUnlockKey)) {
+                ConsoleManager.unlock();
+                logger.info("Console auto unlocked");
+            }
+        }
+    }
+
+    @Override
+    public NewLauncherSettings getDefaultConfig() {
+        return new NewLauncherSettings();
+    }
+}
