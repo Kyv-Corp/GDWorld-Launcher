@@ -1,17 +1,15 @@
 # LauncherStartScreen
 
-Добавляет окно загрузки лаунчера сразу после его старта.
+Shows a splash window immediately after launcher startup, before runtime initialization.
 
-#### Установка модуля
+1. Copy LauncherStartScreen_lmodule.jar to /LaunchServer/launcher-modules/.
+2. Place splash.png at /LaunchServer/launcher-pack/splash.png.
+3. Place favicon.ico at /LaunchServer/launcher-pack/favicon.ico.
+4. Run `build`.
 
-1. Скопировать модуль **LauncherStartScreen_lmodule.jar** в папку **/LaunchServer/launcher-modules/**
-2. Скопировать изображение *splash.png* в папку **/LaunchServer/launcher-pack/splash.png**
-3. Скопировать иконку *favicon.ico* в папку **/LaunchServer/launcher-pack/favicon.ico**
-4. Выполнить **build** Launcher.
+Configuration: /LaunchServer/config/StartScreen/Config.json. If startup throws ClassNotFoundException for pro.gravit.launchermodules.startscreen.TestConfig, replace TestConfig with Config in /META-INF/MANIFEST.MF.
 
-#### Конфигурация
-
-- `/LaunchServer/config/StartScreen/Config.json`
+## Configuration and command examples
 
 ```json
 {
@@ -23,9 +21,3 @@
   "colorA": 0.0
 }
 ```
-
-#### Заметки
-
-- Если при запуске **LaunchServer** возникает
-  ошибка: `[ERROR] java.lang.ClassNotFoundException: pro.gravit.launchermodules.startscreen.TestConfig`.
-    - Нужно изменить в файле **/META-INF/MANIFEST.MF** `TestConfig` на `Config`.

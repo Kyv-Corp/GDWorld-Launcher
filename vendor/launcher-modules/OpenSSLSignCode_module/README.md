@@ -1,33 +1,29 @@
 # OpenSSLSignCode
 
-Позволяет подписывать **Launcher.exe** своим сертификатом используя утилиту *osslsigncode*.
+Signs Launcher.exe with your certificate using osslsigncode.
 
-#### Установка модуля
+1. Copy OpenSSLSignCode_module.jar to /LaunchServer/modules/.
+2. Create a self-signed certificate or purchase one; see the [Wiki]. Set sign.enabled=true in LaunchServer.json.
+3. Install osslsigncode. Debian-family systems: `sudo apt install osslsigncode`. Historical CentOS7 and CentOS8 Stream commands are retained below.
+4. Run `build` in LaunchServer; a correctly configured EXE is signed.
 
-1. Скопировать модуль **OpenSSLSignCode_module.jar** в папку **/LaunchServer/modules/**.
-2. Обязательно создать самоподписанный сертификат или же купить его (более подробное описание есть на [Wiki]).
-  - В конфигурации **LaunchServer.json** `"sign": { "enabled": true }`.
-1. Установленная программа **osslsigncode**.
-  - Debian-подобные системы: `sudo apt install osslsigncode`.
-  - Для CentOS 7:
+Configuration: /LaunchServer/config/OSSLSignCode/Config.json. `osslsignexe [path to input exe] [path to output exe]` manually signs a launch4j-created EXE.
+
+Timestamp servers can make signature sizes differ between the first and second signing calls. If necessary, remove timestampServer from the configuration to disable timestamping, understanding that this changes timestamp behavior.
+
+## Configuration and command examples
+
 ```sh
 cd /etc/yum.repos.d/
 wget https://download.opensuse.org/repositories/home:danimo/CentOS_7/home:danimo.repo
 yum install osslsigncode calc
 ```
-  - Для CentOS 8 Stream:
+
 ```sh
 cd /etc/yum.repos.d/
 wget -O VortexOBS.repo https://download.opensuse.org/repositories/home:VortexOBS/CentOS_8/home:VortexOBS.repo
 dnf -y install osslsigncode
 ```
-
-
-1. Выполнить **build** в консоли *LaunchServer*, если всё сделали правильно, **exe** будет подписан сертификатом.
-
-#### Конфигурация
-
-- */LaunchServer/config/OSSLSignCode/Config.json*
 
 ```json
 {
@@ -40,16 +36,8 @@ dnf -y install osslsigncode
 }
 ```
 
-#### Команды
-
 ```
-osslsignexe [path to input exe] [path to output exe] - подписать exe, созданный с помощью launch4j вручную
+osslsignexe [path to input exe] [path to output exe] - manually sign an EXE created by launch4j
 ```
-
-#### Замечания
-
-- Иногда вы можете получать ошибку о несоответствии размера подписи. Это происходит из за *timestamp server*, так как
-  нельзя заранее угадать совпадет ли размер подписи в первом вызове и во втором. Если это вас беспокоит вы можете
-  отключить использование `timestampServer` путем удаление этой строчки из конфигурации.
 
 [Wiki]: https://gravitlauncher.com

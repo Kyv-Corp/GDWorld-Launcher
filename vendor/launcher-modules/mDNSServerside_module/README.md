@@ -1,44 +1,26 @@
 # AdditionalHash
 
-### Внимание! Данная документация устарела и не подходит к лаунчсерверу v5.2+ (актуальная документация указана в [wiki](https://gravitlauncher.com/auth/#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-passwordverifier))
----
+This historical documentation does not apply to LaunchServer v5.2+. Use the current [PasswordVerifier documentation](https://gravitlauncher.com/auth/#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-passwordverifier).
 
-Добавляет новый тип **AuthProvider'a**, который поддерживает стандартное шифрование паролей таких CMS как *WorldPress* и
-новые версии *DLE*.
+Adds AuthProvider types for CMS password hashes, including WordPress and newer DLE versions. In most cases the request AuthProvider can replace this module.
 
-- *Вместо данного модуля почти всегда можно использовать **AuthProvider** - `"type": "request"`.*
+| CMS | Type |
+| --- | --- |
+| DLE11+ | mysql-bcrypt |
+| WordPress | mysql-phphash |
 
-| CMS | type |
-| ------ | ------ |
-| DLE 11+ | mysql-bcrypt |
-| Wordpress | mysql-phphash |
+1. Copy AdditionalHash_module.jar to /LaunchServer/modules/.
+2. Download jbcrypt-0.4.jar into /LaunchServer/libraries/ using the commands below.
+3. Configure the auth provider with type mysql-bcrypt or mysql-phphash and your MySQL/MariaDB connection.
 
-#### Установка модуля
+address is the database host; port is its port; username/password are database credentials; database selects the database. In query, replace dle_users with your account table. The example requires a permission column; add it with the SQL below if absent. Example credentials are placeholders.
 
-1. Скопировать модуль **AdditionalHash_module.jar** в папку **/LaunchServer/modules/**
-2. Скачать библиотеку *[jbcrypt-0.4.jar]* и положить в папку **/LaunchServer/libraries/**:
+## Configuration and command examples
 
 ```sh
 wget https://repo1.maven.org/maven2/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar
 mv jbcrypt-0.4.jar /LaunchServer/libraries/
 ```
-
-1. Выполнить настройку `auth provider`
-
-Укажите нужный вам `"type": "mysql-bcrypt"` или `"mysql-phphash"`
-Так же требуется заполнить подключение к вашей БД MySQL \| MariaDB.
-
-`"address": "localhost"` - Адрес вашей БД.
-
-`"port": 3306` - Порт БД.
-
-`"username": "root"` - Имя пользователя от БД.
-
-`"password": "db_password"` - Пароль от БД.
-
-`"database": "database"` - Название БД.
-
-`"query": "..."` - В запросе изменить название **dle_users** на вашу таблицу с учетными записями.
 
 ```json
 {
@@ -54,13 +36,10 @@ mv jbcrypt-0.4.jar /LaunchServer/libraries/
     "query": "SELECT password, name, permission FROM dle_users WHERE (email=? OR name=?)",
     "queryParams": [ "%login%", "%login%" ],
     "usePermission": true,
-    "message": "Пароль неверный!"
+    "message": "Incorrect password!"
   }
 }
 ```
-
-*Обратите внимание на **permission** в запросе, в вашей таблице требуется создать столбец с таким именем, если его
-нету!*
 
 ```sql
 ALTER TABLE `dle_users` ADD `permission` TINYINT NOT NULL DEFAULT '0';

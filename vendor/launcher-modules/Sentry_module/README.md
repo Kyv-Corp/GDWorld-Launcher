@@ -1,32 +1,25 @@
-# Sentry ServerModule
+# Sentry LaunchServer
 
-Интеграция **[LaunchServer](https://github.com/GravitLauncher/Launcher)** с Sentry
+Integrates [LaunchServer](https://github.com/GravitLauncher/Launcher) with Sentry to track errors. Launcher errors include stack traces and additional diagnostic information to help identify, reproduce and resolve failures.
 
-- `Этот модуль позволяет отслеживать ошибки возникающие на стороне вашего лаунчсервера`
+1. Copy Sentry_module.jar into /LaunchServer/modules/, or create the symlink shown below.
+2. Start and stop LaunchServer.jar to generate configuration.
+3. Create an account and a Java project at Sentry.io.
+4. Copy the DSN from Settings → Projects → your project → Client Keys (DSN), or https://<ORGANIZATION>.sentry.io/settings/sentry/projects/<PROJECT>/keys/.
+5. Replace YOUR_DSN in /LaunchServer/config/SentryServerModule/Config.json with your DSN.
 
-![sentry-java](https://user-images.githubusercontent.com/12544425/236633515-88d3d837-35c0-47e4-a4c1-765d9cb152bc.png)
+Account language, timezone and theme settings are available under [Account Details](https://sentry.io/settings/account/details/).
 
-#### Установка модуля
+For deobfuscation of launcher stack traces, see [SentryProGuardUpload](https://github.com/GravitLauncher/LauncherModules/tree/master/SentryProGuardUpload_module).
 
-1. Скопировать модуль **Sentry_module.jar** в папку **/LaunchServer/modules/**
-   - Либо установкой symlink:
-     ```
+## Configuration and command examples
+
+```
      cd modules
      ln -s ../src/modules/Sentry_module/build/libs/Sentry_module.jar
      ```
-2. Запустить и остановить **LaunchServer.jar** для создания файла конфигурации.
-3. Зарегистрироваться на сайте **Sentry.io** и создайте там Java проект.
-4. После создания проекта потребуется скопировать **DSN** ключ:
-    - `https://<ОРГАНИЗАЦИЯ>.sentry.io/settings/sentry/projects/<ИМЯ_ПРОЕКТА_ДЛЯ_ЛАУНЧСЕРВЕРА>/keys/ => DSN`
-    - **Settings -> Projects -> [Выбрать созданный проект] -> Client Keys (DSN)**
-    - **Настройки -> Проекты -> [Выбрать созданный проект] -> Клиентские ключи (DSN)**
-5. Изменить в файле конфигурации **YOUR_DSN** на скопированный.
 
-#### Конфигурация
-
-- **/LaunchServer/config/SentryServerModule/Config.json**
-
-  ```json
+```json
   {
     "dsn": "YOUR_DSN",
     "sampleRate": 1.0,
@@ -44,6 +37,4 @@
   }
   ```
 
-#### P.S.
-
-- Настройка в вашей учётной записи: языка, часового пояса и темы по ссылке [\[Account Details\]](https://sentry.io/settings/account/details/)
+![sentry-java](https://user-images.githubusercontent.com/12544425/236633515-88d3d837-35c0-47e4-a4c1-765d9cb152bc.png)

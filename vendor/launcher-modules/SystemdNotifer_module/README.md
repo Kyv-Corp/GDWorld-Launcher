@@ -1,25 +1,15 @@
 # SystemdNotifer
 
-Служит для уведомления **LaunchServer** о готовности системному менеджеру **systemd**.
+Notifies systemd when LaunchServer is ready, allowing correct service startup ordering.
 
-#### Установка модуля
+1. Copy SystemdNotifer_module.jar to /LaunchServer/modules/.
+2. Install screen: `sudo apt install screen` on Debian-family systems, or `sudo yum install screen` on CentOS.
+3. Create /etc/systemd/system/Launcher.service using the example below.
+4. Set Description to the service description, WorkingDirectory to LaunchServer's absolute directory, User to the service account and Group to its group (often matching the username).
+5. Run `systemctl daemon-reload`, `systemctl enable Launcher`, then `systemctl start Launcher`.
+6. Check `systemctl status Launcher`; the sample output below shows the expected active state.
 
-1. Скопировать модуль **SystemdNotifer_module.jar** в папку **/LaunchServer/modules/**
-2. Для работы *unit* потребуется так же установленная утилита **screen**.
-    - Debian подобные системы `sudo apt install screen`
-    - CentOS `sudo yum install screen`
-3. Создаём новый файл **Launcher.service** по пути: `/etc/systemd/system/Launcher.service`.
-4. Копируем конфигурацию указанную ниже с внесением изменений в созданный файл.
-    - `Description` - Описание сервиса (unit'а).
-    - `WorkingDirectory` - Полный путь до **LaunchServer**.
-    - `User` - Имя пользователя, от имени которого будет запущена служба (LaunchServer.jar).
-    - `Group` - Группа пользователя (обычно совпадает с именем пользователя).
-5. Перезапускаем systemd `systemctl daemon-reload`
-6. Включаем наш *unit* `systemctl enable Launcher`
-7. Запускаем *unit* `systemctl start Launcher`
-8. Проверяем что он запустился командой `systemctl status Launcher`
-
-Вывод команды должен быть примерно такой:
+## Configuration and command examples
 
 ```
 ● Launcher.service - LaunchServer
@@ -32,8 +22,6 @@ systemd[1]: Starting LaunchServer...
 systemd[1]: Started LaunchServer.
 ```
 
-#### Конфигурация
-
 ```bash
 [Unit]
 Description=LaunchServer
@@ -45,7 +33,7 @@ Type=notify
 User=launchserver
 Group=servers
 NotifyAccess=all
-Restart=always    
+Restart=always
 
 ExecStart=/usr/bin/screen -DmS launchserver /usr/bin/java -Xmx512M -javaagent:LaunchServer.jar -jar LaunchServer.jar
 ExecStop=/usr/bin/screen -p 0 -S launchserver -X eval 'stuff "stop"\015'

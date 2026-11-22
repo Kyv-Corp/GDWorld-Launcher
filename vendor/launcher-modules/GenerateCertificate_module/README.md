@@ -1,16 +1,11 @@
 # GenerateCertificate
 
-Создает сертификаты для подписи **Launcher.**(*jar\|exe*).
+Generates certificates for signing Launcher.jar/Launcher.exe.
 
-#### Установка модуля
+1. Copy GenerateCertificate_module.jar to /LaunchServer/modules/.
+2. Start LaunchServer.jar and run `generatecertificate` in its console.
+3. Stop LaunchServer with `stop`.
+4. Copy the generated configuration from the log or terminal.
+5. Replace the corresponding LaunchServerConfig.json block with that configuration.
 
-1. Скопировать модуль **GenerateCertificate_module.jar** в папку **/LaunchServer/modules/**
-2. Запустите **LaunchServer.jar** и выполните команду в консоли: `generatecertificate`
-3. Остановите *LaunchServer* командой `stop`
-4. Скопируйте сгенерированую конфигурацию.
-   *Из лог файла или же из терминала выделив его*
-5. Замените блок конфигурации в файле **LaunchServerConfig.json** тем, что вы скопировали в п.4.
-
-#### Замечания
-
-- Модуль **GenerateCertificate_module.jar** можно удалить после генерации сертификатов.
+The module can be removed after generating the certificates.

@@ -1,59 +1,42 @@
 # LauncherPrestarter
 
-Это престартер для GravitLauncher, написанный на языке Rust с использованием [tauri](https://v2.tauri.app/)
+GravitLauncher prestarter written in Rust with [Tauri](https://v2.tauri.app/).
 
-## Клонирование репозитория
+## Clone
 
 ```bash
 git clone -b rust/5.7.x https://github.com/GravitLauncher/LauncherPrestarter.git
 ```
 
-## Подготовка окружения (Windows)
+## Windows development environment
 
-- Установите [Visual Studio](https://visualstudio.microsoft.com/) (не Vistal Studio Code) с компонентом "Разработка приложений на C++"
-- Следуйте [инструкции](https://rust-lang.org/tools/install/) и по установке окружения для разработки на Rust
-- Установите [NodeJS](https://nodejs.org/en/download/current)
-- Установите yarn с помощью npm
+- Install [Visual Studio](https://visualstudio.microsoft.com/) (not Visual Studio Code) with the C++ desktop development workload.
+- Follow the [Rust installation instructions](https://rust-lang.org/tools/install/).
+- Install [NodeJS](https://nodejs.org/en/download/current).
+- Install Yarn and dependencies from the prestarter directory:
+
 ```bash
 npm install --global yarn
-```
-- Откройте папку с престартером в консоли и выполните следующую команду:
-```
 yarn
 ```
 
-## Отладка и сборка
+## Debugging and building
 
-Выполните `yarn tauri dev` что бы запустить престартер в режиме отладки. Престартер всегда в таком случае будет показывать окно скачки (для удобства отладки). Если вам необходимо что бы престартер не начинал скачивание Java, закомментируйте строчку `setTimeout(startDownload, appConfig.download.initialDelay);` в `src/App.svelte`. Не забудьте потом вернуть эту строчку обратно!
+Run `yarn tauri dev` for debug mode. For debugging convenience, the download window is always shown. To prevent Java downloading while debugging, comment out `setTimeout(startDownload, appConfig.download.initialDelay);` in src/App.svelte, and restore the line afterwards.
 
-Выполните `yarn tauri build` для сборки итогового exe файла. Он будет лежать в `src-tauri/target/release`
+Run `yarn tauri build` to build the final EXE in src-tauri/target/release.
 
-## Редактирование дизайна
+## Design customization
 
-### Настройка IDE
+Recommended IDE setup: [VS Code](https://code.visualstudio.com/) with [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode), [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) and [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+src/ contains the Svelte frontend, compiled to HTML/CSS/JS by Vite. src-tauri/ contains the Rust backend.
 
-### Архитектура проекта
+Useful references: [Svelte](https://svelte.dev/), [Tauri](https://v2.tauri.app/), [Rust](https://rust-lang.org/), [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS), [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML), [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
 
-В папке `src` находится исходный код фронтенда(по сути, проект на Svelte который собирается в html/css/js с помощью vite)
+## Icons
 
-В папке `src-tauri` находится исходный код бекенда(явдяющийся Rust приложением)
-
-Полезные ссылки:
-
-- [Svelte](https://svelte.dev/)
-- [Tauri](https://v2.tauri.app/)
-- [Rust](https://rust-lang.org/)
-- [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
-- [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
-- [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-
-### Смена иконки
-
-Логотип, отображаемый внутри приложения находится в `src/lib/assets/images/logo.svg`
-
-Для замены лого в панели задач выполните команду
+The in-app logo is src/lib/assets/images/logo.svg. Generate the taskbar icon with:
 
 ```bash
 yarn tauri icon PATH_TO_ICON_PNG

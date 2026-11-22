@@ -1,55 +1,40 @@
 # LauncherModules
 
-РЕПОЗИТОРИЙ ЯВЛЯЕТСЯ ПОДМОДУЛЕМ!!! Скомпилированные файлы находятся в релизах главного репозитория [GravitLauncher]
+This is an upstream submodule. Compiled files are available in the main [GravitLauncher] repository's releases.
 
-Набор публичных модулей различного назначения для [GravitLauncher]
-- Подробное описание и конфигурацию каждого из них можно найти в папке с конкретным модулем
-- Некоторые инструкции модулей могут быть устаревшими на GitHub, первостепенным источником является [Wiki]
+Public modules for different GravitLauncher functions. Each module directory contains its configuration and instructions. Some GitHub instructions may be outdated; the [Wiki] is the primary documentation source.
 
-## Модули для LauncherRuntime
-- Именуемые далее как **`_lmodule`**
-- Устанавливать в папку **`launcher-modules/`**
-- Где найти?
-  - В архиве **LauncherModules.zip** из [Releases]
-  - При установке скриптом из исходников, модули доступны по пути: 
-  ```java{1}:no-line-numbers
-  src/modules/<ModuleName>_lmodule/build/libs/<ModuleName>_lmodule.jar
-  ```
-| Модуль | Описание |
-| ------ | ------ |
-| [DiscordGame] | Добавляет игровую активность в **Discord** |
-| [LauncherGuard] | Добавляет поддержку нативной защиты |
-| [LauncherStartScreen] | Добавляет окно загрузки [Launcher]'а до полной инициализации **runtime** |
-| [Sentry] | Интеграция [Launcher] с системой отслеживания ошибок **Sentry** |
+## LauncherRuntime modules
 
+These use the `_lmodule` suffix and go in `launcher-modules/`. Obtain them from LauncherModules.zip in [Releases], or build from source at `src/modules/<ModuleName>_lmodule/build/libs/<ModuleName>_lmodule.jar`.
 
-## Модули для LaunchServer
-- Именуемые далее как **`_module`**
-- Устанавливать в папку **`modules/`**
-- Где найти?
-  - В архиве **LaunchServerModules.zip** из [Releases]
-  - При установке скриптом из исходников, модули доступны по пути: 
-  ```java{1}:no-line-numbers
-  src/modules/<ModuleName>_module/build/libs/<ModuleName>_module.jar
-  ```
-| Модуль | Описание |
-| ------ | ------ |
-| [AdditionalHash] | Необходим для хеша пароля PHPASS<br>[\[Конфигурация PasswordVerifier\]](https://gravitlauncher.com/auth/#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-passwordverifier) |
-| [DiscordBotConsole] | Модуль позволяет взаимодействовать с [LaunchServer] через Discord клиент |
-| [FileAuthSystem] **\*** | Система авторизации с хранением базы пользователей в файле json<br>[\[Метод FileAuthSystem\]](https://gravitlauncher.com/auth/#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-fileauthsystem) |
-| [GenerateCertificate] | Создает сертификаты для подписи бинарных файлов лаунчера (.jar/.exe) |
-| [MirrorHelper] | Сборка клиентов с патчем authlib для [GravitLauncher] |
-| [MojangSupport] | Добавляет поддержку лицензионных аккаунтов **Mojang/Microsoft** |
-| [OpenSSLSignCode] | Позволяет подписывать `.exe` файлы своим сертификатом |
-| [RemoteControl] | Позволяет выполнять консольные команды [LaunchServer] при помощи HTTP протокола |
-| [S3Updates] | Синхронизация папки `updates` с Хранилищем объектов S3 |
-| [SentryProGuardUpload] | Снятие ProGuard маппингов с приходящих стактрейсов со стороны лаунчера |
-| [Sentry LaunchServer] | Интеграция [LaunchServer] с системой отслеживания ошибок **Sentry** |
-| [SystemdNotifer] | Служит для правильного порядка загрузки [LaunchServer] через службу **systemd** |
-| [TelegramBotConsole] | Модуль позволяет взаимодействовать с [LaunchServer] через Telegram клиент. |
-| [UnsafeCommandPack] | Добавляет дополнительные команды в [GravitLauncher] |
+| Module | Purpose |
+| --- | --- |
+| [DiscordGame] | Discord game activity. |
+| [LauncherGuard] | Native protection support. |
+| [LauncherStartScreen] | Splash screen before runtime initialization. |
+| [Sentry] | Launcher error tracking with Sentry. |
 
-**\*** - `рекомендовано для разработки`
+## LaunchServer modules
+
+These use the `_module` suffix and go in `modules/`. Obtain them from LaunchServerModules.zip in [Releases], or build from source at `src/modules/<ModuleName>_module/build/libs/<ModuleName>_module.jar`.
+
+| Module | Purpose |
+| --- | --- |
+| [AdditionalHash] | PHPASS password hashing; see the Wiki's PasswordVerifier configuration. |
+| [DiscordBotConsole] | Interact with LaunchServer through Discord. |
+| [FileAuthSystem] | JSON-file user database; recommended for development; see the Wiki's FileAuthSystem method. |
+| [GenerateCertificate] | Generate launcher JAR/EXE signing certificates. |
+| [MirrorHelper] | Prepare clients with the GravitLauncher authlib patch. |
+| [MojangSupport] | Mojang/Microsoft premium account support. |
+| [OpenSSLSignCode] | Sign EXE files with your certificate. |
+| [RemoteControl] | Execute LaunchServer console commands over HTTP. |
+| [S3Updates] | Synchronize updates/ with S3 object storage. |
+| [SentryProGuardUpload] | Deobfuscate incoming launcher stack traces through uploaded mappings. |
+| [Sentry LaunchServer] | LaunchServer error tracking with Sentry. |
+| [SystemdNotifer] | Correct LaunchServer startup ordering under systemd. |
+| [TelegramBotConsole] | Interact with LaunchServer through Telegram. |
+| [UnsafeCommandPack] | Additional GravitLauncher commands. |
 
 [GravitLauncher]: https://github.com/GravitLauncher/Launcher
 [Launcher]: https://github.com/GravitLauncher/LauncherRuntime

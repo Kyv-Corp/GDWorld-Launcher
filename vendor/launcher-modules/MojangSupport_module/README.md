@@ -1,12 +1,11 @@
 # MojangSupport
 
-Добавляет [GravitLauncher] поддержку **mojang**
+Adds Mojang/Microsoft account support to [GravitLauncher].
 
-#### Установка модуля
+The pinned upstream instructions name GenerateCertificate_module.jar as the file to place in /LaunchServer/modules/; verify the correct MojangSupport artifact for your distribution before installation. Configure the auth core provider for Microsoft as in the example below.
 
-1. Скопировать модуль **GenerateCertificate_module.jar** в папку **/LaunchServer/modules/**
-2. Выполнить настройку `auth core provider`:
-Для авторизации через microsoft:
+## Configuration and command examples
+
 ```json
   "auth": {
     "microsoft": {

@@ -1,27 +1,21 @@
 # Prestarter ServerModule
 
-Модуль для интеграции нового престартера с вашим LaunchServer. По умолчанию лаунчер поставляется в виде обычного `.jar` приложения, однако данный модуль позволяет автоматически собирать нативную `.exe` сборку клиента со встроенным загрузчиком Java. Исходный код престартера находится в репозитории **[LauncherPrestarter](https://github.com/GravitLauncher/LauncherPrestarter)**.
+Integrates the new prestarter with LaunchServer. The launcher normally ships as a JAR; this module automatically creates a native Windows EXE with a Java downloader. Sources: [LauncherPrestarter](https://github.com/GravitLauncher/LauncherPrestarter).
 
-- `Этот модуль склеивает собранный exe-престартер с jar-файлом лаунчера, а также автоматически подписывает итоговый файл цифровым сертификатом (если установлен соответствующий модуль подписи)`
+The module concatenates the built prestarter EXE and launcher JAR, and signs the result when the appropriate signing module is installed. The prestarter is a lightweight Rust/Tauri application with a Svelte frontend, responsible for initial startup, downloading the required Java runtime and preparing the client environment.
 
-#### О престартере
+1. In a running LaunchServer, run `modules load Prestarter`.
+2. Put the LauncherPrestarter binary in the LaunchServer root directory.
+3. Restart LaunchServer and run `build`; the EXE appears in updates/.
 
-Сам престартер представляет собой легковесное нативное приложение, написанное на языке **Rust** с использованием фреймворка **Tauri** (фронтенд построен на **Svelte**). Он отвечает за первичный запуск, скачивание необходимой Java-рантайм и подготовку окружения для лаунчера на стороне клиента.
+For design, icon or logic customization, clone the repository using the command below. Its README describes NodeJS/Yarn/Rust/Visual Studio setup and `yarn tauri build`.
 
-#### Установка модуля
+## Configuration and command examples
 
-1. В консоли запущенного **LaunchServer** выполните команду для автоматической загрузки:
-   ```text
+```text
    modules load Prestarter
    ```
-2. Поместить бинарник **[LauncherPrestarter](https://github.com/GravitLauncher/LauncherPrestarter)** в корень вашего лаунчсервера.
-3. Перезагрузить лаунчсервер и выполнить команду `build`. Собранный `exe` появится в `updates`.
-#### Разработка и кастомизация престартера
-
-Если вам необходимо изменить дизайн, иконки или логику самого престартера, склонируйте его исходный код из официального репозитория:
 
 ```bash
 git clone https://github.com/GravitLauncher/LauncherPrestarter.git
 ```
-
-*Инструкции по настройке окружения (NodeJS, Yarn, Rust, Visual Studio) и команды сборки (`yarn tauri build`) находятся в файле README репозитория престартера.*

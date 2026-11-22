@@ -1,29 +1,22 @@
 # RemoteControl
 
-Позволяет выполнять команды лаунчсервера удаленно используя HTTP запросы
+Executes LaunchServer console commands remotely over HTTP.
 
-#### Установка модуля
+1. Copy RemoteControl_module.jar to /LaunchServer/modules/.
+2. Restart LaunchServer.
+3. Configure the module using commands or its configuration file.
 
-1. Скопировать модуль **RemoteControl_module.jar** в папку **/LaunchServer/modules/**
-2. Перезапустить LaunchServer
-3. Настроить конфигурацию модуля через команды или отредактировав файл конфигурации
+Requests can be made with curl, a browser or a script. The examples below show direct and reverse-proxied addresses; YOUR_ADDRESS and YOUR_TOKEN are placeholders. The pinned upstream configuration example is empty.
 
-#### Выполнение запроса
-
-Запрос можно выполнить с помощью curl, браузера или любого скрипта.  
-Например:
+## Configuration and command examples
 
 ```bash
 curl http://YOUR_ADDRESS:9274/webapi/remotecontrol/command?token=YOUR_TOKEN&command=build&log=true
 ```
 
-Или используя проксирование:
-
 ```bash
 curl https://YOUR_ADDRESS/webapi/remotecontrol/command?token=YOUR_TOKEN&command=build&log=true
 ```
-
-#### Конфигурация
 
 ```
 

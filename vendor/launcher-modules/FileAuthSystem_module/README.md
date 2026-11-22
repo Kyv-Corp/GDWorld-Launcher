@@ -1,21 +1,16 @@
 # FileAuthSystem
 
-Система пользователей с хранением данных в файле `.json`
+Stores user accounts in a JSON file.
 
-#### Установка модуля
+1. Copy FileAuthSystem_module.jar to /LaunchServer/modules/.
+2. Start LaunchServer and run `fileauthsystem install`.
+3. Register users with `config auth.std.core register [username] email [password]`.
 
-1. Скопировать модуль **FileAuthSystem_module.jar** в папку **/LaunchServer/modules/**
-2. Запустить LaunchServer и прописать команду `fileauthsystem install`
-3. Зарегистрируйте пользователей командой `config auth.std.core register [username] email [password]`
-4. Всё!
+Enter `config auth.std.core` and press TAB to list commands. autoSave saves the database file when LaunchServer stops. AuthCoreProvider type is fileauthsystem; the install command configures it automatically.
 
-#### Команды
+Use `config auth.std.core updateskin` and `config auth.std.core updatecloak` to set skins/capes. Files default to updates/skins/{HASH}. Their URLs are stored in the database file; changing host/IP/port requires updating existing skin/cape URLs.
 
-Введите `config auth.std.core` и нажмите TAB для просмотра доступных команд
-
-#### Конфигурация
-
-- autoSave - автоматически сохранить базу данных в файл при остановке LaunchServer
+## Configuration and command examples
 
 ```
 {
@@ -23,18 +18,8 @@
 }
 ```
 
-- Тип authCoreProvider `fileauthsystem`, конфигурация:
-
 ```json
 {
   "type": "fileauthsystem"
 }
 ```
-
-- При установке через `fileauthsystem install` AuthCoreProvider будет установлен автоматически
-
-#### Скины и плащи
-
-Вы можете использовать команды `config auth.std.core updateskin` и `config auth.std.core updatecloak` для установки скина пользователю.  
-По умолчанию скины и плащи будут сохрянятся в папку `updates/skins/{HASH}`.  
-URL скинов и плащей сохраняются в файл, поэтому при смене IP адреса или порта все скины нужно будет обновить

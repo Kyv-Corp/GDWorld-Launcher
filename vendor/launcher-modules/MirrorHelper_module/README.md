@@ -1,48 +1,13 @@
 # MirrorHelper
 
-Полу-автоматическая сборка Forge, Fabric и Vanilla с патчем authlib. **Требует установки модуля UnsafeCommandsPack**
+Semi-automatic Forge, Fabric and Vanilla client preparation with an authlib patch. Requires UnsafeCommandsPack.
 
-#### Установка модуля
+1. Install UnsafeCommandsPack, then copy MirrorHelper_module.jar to /LaunchServer/modules/.
+2. After first startup, add your CurseForge API key to the module configuration.
+3. Prepare the workspace, then run `installclient`.
 
-1. Установить модуль UnsafeCommandsPack
-2. Скопировать модуль **MirrorHelper_module.jar** в папку **/LaunchServer/modules/**
-3. После первого запуска открыть конфигурацию модуля и скопировать туда API ключ Curseforge
-4. Настроить окружение
-5. Собрать клиент командой `installclient`
+Workspace: /LaunchServer/config/MirrorHelper/workspace. authlib/ must contain LauncherAuthlib1.jar, LauncherAuthlib2.jar, LauncherAuthlib3.jar, LauncherAuthlib3-1.19.jar and LauncherAuthlib3-1.19.1.jar. installers/ must contain fabric-installer.jar and forge-{VERSION}-installer.jar (for example forge-1.16.5-installer.jar). Forge installation requires a GUI.
 
-#### Описание окружения
+workdir/ overlays are applied in order: ALL/, {FABRIC/FORGE/VANILLA}/, lwjgl{2/3}/, java{17/8}/, {VERSION}/ALL/, {VERSION}/{FABRIC/FORGE/VANILLA}/.
 
-Рабочая папка модуля находится в **/LaunchServer/config/MirrorHelper/workspace**  
-1. В папке authlib должны находится LauncherAuthlib всех версий:
-- LauncherAuthlib1.jar
-- LauncherAuthlib2.jar
-- LauncherAuthlib3.jar
-- LauncherAuthlib3-1.19.jar
-- LauncherAuthlib3-1.19.1.jar
-1. В папке installers должны находится установщики forge и fabric:
-- fabric-installer.jar
-- forge-{ВЕРСИЯ}-installer.jar (например `forge-1.16.5-installer.jar`)
-**Для установки Forge необходим GUI**
-1. В папке workdir должны хранится файлы, которые будут скопированы в клиент в указанном порядке
-- ALL/
-- {FABRIC/FORGE/VANILLA}/
-- lwjgl{2/3}/
-- java{17/8}/
-- {ВЕРСИЯ}/ALL/
-- {ВЕРСИЯ}/{FABRIC/FORGE/VANILLA}/
-
-#### Пример работы для Fabric 1.19.2
-1. Модуль скачивает клиент и профиль в локальный кеш (при необходимости)
-2. Копирует всё содержимое оригинального клиента в указанную папку в updates
-3. Патчит authlib используя `LauncherAuthlib3-1.19.1.jar`
-4. Устанавливает fabric
-5. Копирует содежимое следующих папок в клиент в таком порядке:
-- ALL/
-- FABRIC/
-- lwjgl3/
-- java17/
-- 1.18.2/ALL/
-- 1.18.2/FABRIC/
-1. Устанавливает моды с curseforge если это было указано
-2. Выполняет `deduplibraries`
-3. Создает профиль
+The historical Fabric1.19.2 example downloads/caches the client/profile, copies the original client into updates, patches authlib using LauncherAuthlib3-1.19.1.jar, installs Fabric, then overlays ALL/, FABRIC/, lwjgl3/, java17/, 1.18.2/ALL/ and1.18.2/FABRIC/. The1.18.2 paths are retained from that upstream example; adjust them to your target. It then installs configured CurseForge mods, runs deduplibraries and creates a profile.

@@ -1,22 +1,15 @@
 # UnsafeCommandPack
 
-Данный модуль добавляет дополнительные команды в [GravitLauncher]
+Adds extra commands to [GravitLauncher](https://github.com/GravitLauncher/Launcher).
 
-#### Установка модуля
+Copy UnsafeCommandPack_module.jar to /LaunchServer/modules/. No configuration is required.
 
-1. Скопировать модуль **UnsafeCommandPack_module.jar** в папку **/LaunchServer/modules/**
-2. Настройка не требуется.
-
-#### Список дополнительных команд
-
-```sh
-setsecuritymanager [allow, logger, system] - Вызов System.setSecurityManager для тестирования.
-sendauth [connectUUID] [username] [auth_id] [client type] (permissions) (client uuid) - Ручная отправка события AuthEvent соеденению в обход AuthProvider.
-newdownloadasset [version] [dir] - Скачать ассеты прямо с Mojang сайта, любой версии.
-newdownloadclient [version] [dir] - Скачать клиент прямо с Mojang сайта, любой версии. Профиль придется создать самостоятельно.
-patcher [patcher name or class] [path] [test mode(true/false)] (other args) - Запутсить патчер на основе ASM. Позволяет искать пакетхаки в модах (findPacketHack), RAT (findRemote/findDefineClass), UnsafeSunAPI (findSun), поиск и замена любых вызовов по опкоду INVOKESTATIC (pro.gravit.launchermodules.unsafecommands.patcher.StaticReplacerPatcher).
-loadjar [jarfile] - Добавить в SystemClassLoader любой JAR (используя javaagent).
-registercomponent [name] [classname] - Зарегистрировать компонент по классу.
-```
-
-[GravitLauncher]: https://github.com/GravitLauncher/Launcher
+| Command | Purpose |
+| --- | --- |
+| `setsecuritymanager [allow, logger, system]` | Call System.setSecurityManager for testing. |
+| `sendauth [connectUUID] [username] [auth_id] [client type] (permissions) (client uuid)` | Manually send AuthEvent to a connection, bypassing AuthProvider. |
+| `newdownloadasset [version] [dir]` | Download assets for any version directly from Mojang. |
+| `newdownloadclient [version] [dir]` | Download a client directly from Mojang; create its profile separately. |
+| `patcher [patcher name or class] [path] [test mode(true/false)] (other args)` | Run an ASM patcher: findPacketHack finds packet hacks; findRemote/findDefineClass search for RAT behavior; findSun searches for UnsafeSunAPI; pro.gravit.launchermodules.unsafecommands.patcher.StaticReplacerPatcher searches/replaces INVOKESTATIC calls. |
+| `loadjar [jarfile]` | Add a JAR to SystemClassLoader using the javaagent. |
+| `registercomponent [name] [classname]` | Register a component by class name. |

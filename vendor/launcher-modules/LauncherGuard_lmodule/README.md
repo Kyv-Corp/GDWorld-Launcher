@@ -1,18 +1,14 @@
 # LauncherGuard
 
-Добавляет поддержку нативной защиты
+Adds native protection support.
 
-#### Установка модуля
+1. Copy LauncherGuard_lmodule.jar to /LaunchServer/launcher-modules/.
+2. Place your native guard EXE/DLL files in /LaunchServer/launcher-pack/guard/ARCH-OS/, for example x86-64-mustdie for Windows x64.
+3. Configure /LaunchServer/config/LauncherGuard/Config.json as illustrated below.
+4. For protectLauncher=true, also enable launcher.alwaysUseRelauncher=true in LaunchServer configuration.
+5. Run `build` to rebuild the launcher.
 
-1. Скопировать модуль **LauncherGuard_lmodule.jar** в папку **/LaunchServer/launcher-modules/**
-2. Положить файлы exe и dll вашей нативной защиты в папки вида **/LaunchServer/launcher-pack/guard/ARCH-OS/**(например */LaunchServer/launcher-pack/guard/x86-64-mustdie/* для Windows x64)
-3. Настроить конфигурацию
-4. Для работоспособности параметра **protectLauncher**: **true** в конфигурации лаунчсервера установите параметр **launcher.alwaysUseRelauncher**: **true**
-4. Выполнить **build** Launcher.
-
-#### Конфигурация
-
-- `/LaunchServer/config/LauncherGuard/Config.json`
+## Configuration and command examples
 
 ```json
 {
